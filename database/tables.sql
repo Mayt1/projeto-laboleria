@@ -3,7 +3,7 @@ CREATE TABLE cakes(
     name TEXT NOT NULL,
     price BIGINT NOT NULL, ---TALVES DA ERRO AQUI tem q ser float
     image TEXT NOT NULL,
-    description TEXT NOT NULL
+    description TEXT
 );
 
 CREATE TABLE clients (
