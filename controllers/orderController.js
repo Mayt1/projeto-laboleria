@@ -71,3 +71,44 @@ export async function getOrders(req, res) {
         return res.sendStatus(500);
     }
 }
+
+export async function getAllOrders(req, res) {
+    try{
+        //vem os dados da ordem
+        const ordersData = await db.query('SELECT * FROM orders');
+        if(ordersData.rowCount == 0){
+            return res.sendStatus(404);
+        }
+
+        console.log(ordersData.rows)//aqui vem todos os ids
+        const [orders] = ordersData.rows;
+
+        console.log(ordersData.rows.cakeid)
+        //vem os dados do bolo
+        const cakeData = await db.query('SELECT * FROM cakes WHERE id = $1', [orders.cakeid]);
+        if(cakeData.rowCount == 0){
+            return res.sendStatus(404);
+        }
+
+        //vem os dados do cliente
+        const clientData = await db.query('SELECT * FROM clients WHERE id = $1', [orders.clientid]);
+        if(clientData.rowCount == 0){
+            return res.sendStatus(404);
+        }
+        console.log(orders.id)
+        //montar a resposta
+        res.send({
+            idOrder: orders.id,
+            client: clientData.rows,
+            cake: cakeData.rows,
+            createdAt: orders.createdAt,
+            totalPrice :  orders.totalprice,
+            quantity:  orders.quantity,
+        }).status(200)
+
+    } catch (error) {
+        console.error(error);
+        return res.sendStatus(500);
+    }
+}
+
